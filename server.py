@@ -12,6 +12,12 @@ events = [
 ]
 
 
+# Helper function to avoid repeating the same "find by id" lookup
+# in every route that needs a single event
+def find_event(event_id):
+    return next((e for e in events if e["id"] == event_id), None)
+
+
 # A route for "/"
 # (This route should return a JSON welcome message)
 @app.route("/", methods=["GET"])
@@ -42,6 +48,21 @@ def add_event():
     events.append(new_event)
 # 5. Return the new event with status code 201)
     return jsonify(new_event), 201
+
+# A GET route for a single event by id
+# Uses find_event() so the lookup logic isn't repeated elsewhere
+@app.route("/events/<int:event_id>", methods=["GET"])
+def get_event(event_id):
+    event = find_event(event_id)
+    if event is None:
+        return jsonify({"error": "Event not found"}), 404
+    return jsonify(event), 200
+
+
+# Custom 404 handler for any unmatched route (e.g. bad URL, wrong method)
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({"error": "Resource not found"}), 404
 
 
 if __name__ == "__main__":
