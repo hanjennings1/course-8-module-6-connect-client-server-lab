@@ -1,81 +1,77 @@
-# Lab: Building a Front-to-Back Event Catalog
+# Client-Server Application - Event Catalog
+**Completed Sept 15, 2026**
 
-## Learning Goals
+## Description
 
-- Serve a homepage using Flask
-- Create API routes that return and accept JSON
-- Handle GET and POST requests on the back end
-- Connect a Flask back end to a static front end
-- Pass all provided back end tests
+This project implements a small full-stack event catalog using a Flask back end and a static HTML/JS front end. The Flask app exposes routes to:
 
----
+- Return a JSON welcome message (`GET /`)
+- Return the full list of stored events (`GET /events`)
+- Accept and store a new event, validating that a title is provided (`POST /events`)
+- Look up a single event by id (`GET /events/<id>`)
+- Return a consistent JSON error for any unmatched route (`404` handler)
 
-## Setup Instructions
+The front end fetches events from the API on page load and renders them to the DOM. Submitting the form sends a `POST` request to add a new event and appends it to the page immediately, with no page reload.
 
-### 1. Clone the Repository
+## Screenshot
 
-```bash
-git clone <repo-url>
-cd course-8-module-6-connect-client-server-lab
+![Completed lab passing tests](./client-server-application-lab.png)
+
+## Installation
+
+1. Clone this repository:
+   ```
+   git clone <your-fork-url>
+   cd course-8-module-6-connect-client-server-lab
+   ```
+2. Install dependencies:
+   ```
+   pipenv install
+   ```
+3. Activate the virtual environment:
+   ```
+   pipenv shell
+   ```
+
+## Usage
+
+Start the Flask server:
+
 ```
-
-### 2. Create Your Environment
-
-**Using Pipenv:**
-```bash
-pipenv install
-pipenv shell
-```
-
----
-
-## Running the App
-
-```bash
 python server.py
 ```
 
-Then open `client/index.html` in your browser to view the frontend.
+Then open `client/index.html` in your browser to view the front end. With the server running, you can also hit the API directly:
 
----
+```
+curl http://127.0.0.1:5000/
+curl http://127.0.0.1:5000/events
+curl -X POST http://127.0.0.1:5000/events \
+  -H "Content-Type: application/json" \
+  -d '{"title": "New Event"}'
+```
 
-## Running the Tests
+## Testing
 
-To check your work, run:
+Run the test suite with:
 
-```bash
+```
 pytest
 ```
 
-All tests must pass to complete the lab.
+Tests live in `tests/test_app.py` and verify the welcome message, the events list, successful event creation, and the `400` response when a POST is missing a title.
 
----
+## Tools and Resources
 
-## Your Tasks
+- [Flask Quickstart](https://flask.palletsprojects.com/en/latest/quickstart/)
+- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/)
+- [MDN: Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- [MDN: HTTP methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
 
-- [ ] Implement the `/` route to return a welcome message in JSON
-- [ ] Implement a `GET /events` route that returns all event data
-- [ ] Implement a `POST /events` route that accepts a new event and returns it with status 201
-- [ ] Return a `400 Bad Request` if required data is missing in a POST
+## Grading Criteria
 
----
-
-## File Structure
-
-```
-.
-├── client/
-│   ├── index.html
-│   ├── styles.css
-│   └── script.js
-├── server.py
-├── tests/
-│   └── test_app.py
-├── Pipfile
-├── Pipfile.lock
-├── README.md
-```
-
----
-
-Good luck! 🚀
+The application passes all test suites:
+- Homepage returns a welcome message
+- `GET /events` returns the event list
+- `POST /events` creates a new event and returns `201`
+- `POST /events` returns `400` when the title is missing
